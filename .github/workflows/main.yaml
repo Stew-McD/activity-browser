@@ -100,7 +100,7 @@ jobs:
     needs:
       - tests
     # And only on a push event, not a pull_request.
-    if: ${{ github.event_name == 'push' }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -143,7 +143,7 @@ jobs:
     needs:
       - tests
     # And only on a push event, not a pull_request.
-    if: ${{ github.event_name == 'push' }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     defaults:
       run:
