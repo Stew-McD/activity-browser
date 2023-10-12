@@ -52,9 +52,9 @@ jobs:
           environment-file: patched-environment.yml
       - name: Environment info
         run: |
-          mamba list
-          mamba env export
-          mamba env export -f env.yaml
+          micromamba list
+          micromamba env export
+          micromamba env export -f env.yaml
       - name: Upload final environment as artifact
         uses: actions/upload-artifact@v2
         with:
@@ -73,7 +73,7 @@ jobs:
       - name: Install coveralls and coverage
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          mamba install -q -y coveralls=3.3.1 coverage pytest-cov
+          micromamba install -q -y coveralls=3.3.1 coverage pytest-cov
       - name: Run linux tests
         if: ${{ matrix.os == 'ubuntu-latest' }}
         env:
