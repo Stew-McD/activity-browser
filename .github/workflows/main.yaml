@@ -54,7 +54,7 @@ jobs:
         run: |
           micromamba list
           micromamba env export
-          micromamba env export -f env.yaml
+          micromamba env export > env.yaml
       - name: Upload final environment as artifact
         uses: actions/upload-artifact@v2
         with:
