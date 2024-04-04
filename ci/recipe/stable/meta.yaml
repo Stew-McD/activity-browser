@@ -25,7 +25,7 @@ requirements:
     - arrow
     - brightway2 >=2.4.4
     - pyperclip
-    - eidl >=1.4.2
+   # - eidl >=1.4.2
     - networkx
     - pyside2 >=5.15.5
     - qt-webengine

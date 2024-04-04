@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 import zipfile
 
-import eidl
+# import eidl
 import requests
 import brightway2 as bw
 from bw2data.errors import InvalidExchange, UnknownObject
@@ -307,7 +307,7 @@ class Choose7zArchivePage(QtWidgets.QWizardPage):
         self.setLayout(layout)
 
     def initializePage(self):
-        self.stored_dbs = eidl.eidlstorage.stored_dbs
+        self.stored_dbs =""# eidl.eidlstorage.stored_dbs
         self.stored_combobox.clear()
         self.stored_combobox.addItems(sorted(self.stored_dbs.keys()))
 
@@ -708,21 +708,21 @@ class MainWorkerThread(QtCore.QThread):
         else:
             self.run_ecoinvent()
 
-    def run_ecoinvent(self) -> None:
-        """Run the ecoinvent downloader from start to finish."""
-        self.downloader.outdir = eidl.eidlstorage.eidl_dir
-        if self.downloader.check_stored():
-            import_signals.download_complete.emit()
-        else:
-            self.run_download()
+    # def run_ecoinvent(self) -> None:
+    #     """Run the ecoinvent downloader from start to finish."""
+    #     self.downloader.outdir = eidl.eidlstorage.eidl_dir
+    #     if self.downloader.check_stored():
+    #         import_signals.download_complete.emit()
+    #     else:
+    #         self.run_download()
 
-        with tempfile.TemporaryDirectory() as tempdir:
-            temp_dir = Path(tempdir)
-            if not import_signals.cancel_sentinel:
-                self.run_extract(temp_dir)
-            if not import_signals.cancel_sentinel:
-                dataset_dir = temp_dir.joinpath("datasets")
-                self.run_import(dataset_dir)
+    #     with tempfile.TemporaryDirectory() as tempdir:
+    #         temp_dir = Path(tempdir)
+    #         if not import_signals.cancel_sentinel:
+    #             self.run_extract(temp_dir)
+    #         if not import_signals.cancel_sentinel:
+    #             dataset_dir = temp_dir.joinpath("datasets")
+    #             self.run_import(dataset_dir)
 
     def run_forwast(self) -> None:
         """Adapted from pjamesjoyce/lcopt."""
@@ -925,11 +925,6 @@ class EcoinventLoginPage(QtWidgets.QWizardPage):
     def isComplete(self):
         return self.complete
 
-    @Slot(name="EidlLogin")
-    def login(self) -> None:
-        self.success_label.setText("Trying to login ...")
-        self.login_thread.update(self.username, self.password)
-        self.login_thread.start()
 
     @Slot(bool, name="handleLoginResponse")
     def login_response(self, success: bool) -> None:
@@ -1207,26 +1202,26 @@ class ImportSignals(QtCore.QObject):
 import_signals = ImportSignals()
 
 
-class ABEcoinventDownloader(eidl.EcoinventDownloader):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.extraction_process = None
+# class ABEcoinventDownloader(eidl.EcoinventDownloader):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.extraction_process = None
 
-    def login_success(self, success):
-        import_signals.login_success.emit(success)
+#     def login_success(self, success):
+#         import_signals.login_success.emit(success)
 
-    def extract(self, target_dir):
-        """ Override extract method to redirect the stdout to dev null.
-        """
-        code = super().extract(target_dir=target_dir, stdout=subprocess.DEVNULL)
-        if code != 0:
-            # The archive was corrupted in some way.
-            import_signals.cancel_sentinel = True
-            import_signals.unarchive_failed.emit(self.out_path)
+#     def extract(self, target_dir):
+#         """ Override extract method to redirect the stdout to dev null.
+#         """
+#         code = super().extract(target_dir=target_dir, stdout=subprocess.DEVNULL)
+#         if code != 0:
+#             # The archive was corrupted in some way.
+#             import_signals.cancel_sentinel = True
+#             import_signals.unarchive_failed.emit(self.out_path)
 
-    def handle_connection_timeout(self):
-        msg = "The request timed out, please check your internet connection!"
-        if eidl.eidlstorage.stored_dbs:
-            msg += ("\n\nIf you work offline you can use your previously downloaded databases" +
-                    " via the archive option of the import wizard.")
-        import_signals.connection_problem.emit(('Connection problem', msg))
+#     def handle_connection_timeout(self):
+#         msg = "The request timed out, please check your internet connection!"
+#         if eidl.eidlstorage.stored_dbs:
+#             msg += ("\n\nIf you work offline you can use your previously downloaded databases" +
+#                     " via the archive option of the import wizard.")
+#         import_signals.connection_problem.emit(('Connection problem', msg))
